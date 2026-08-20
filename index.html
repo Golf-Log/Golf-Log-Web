@@ -3,56 +3,71 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#173b2a">
+<meta name="theme-color" content="#071014">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Golf Log</title>
+<title>Golf Octopus</title>
 <style>
-:root{--bg:#f4f5f1;--card:#fff;--ink:#18211b;--muted:#68736b;--accent:#173b2a;--line:#dce2dd;--soft:#eaf1eb;--danger:#8d352e}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:var(--accent);color:#fff;padding:15px 15px 13px;position:sticky;top:0;z-index:10}
-header h1{font-size:20px;margin:0}header small{opacity:.78}
-main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
-.step{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:800;margin-bottom:5px}
-h2{font-size:19px;margin:0 0 10px}.muted{color:var(--muted);font-size:12px;line-height:1.4}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.two{grid-template-columns:repeat(2,1fr)}
-button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:12px 8px;min-height:50px;font-size:14px;font-weight:700}
-button.selected{background:var(--soft);border:2px solid var(--accent)}
-button.primary{background:var(--accent);color:#fff;border-color:var(--accent);width:100%;font-size:16px}
-button.secondary{background:#f0f2ef}
-.row{display:flex;gap:8px}.row>*{flex:1}
-.gps{background:var(--soft);border-radius:12px;padding:10px;margin-bottom:9px;font-size:12px}
-.gps b{display:block}.badge{font-size:11px;background:var(--soft);padding:4px 7px;border-radius:999px}
-.hidden{display:none!important}.status{display:flex;justify-content:space-between;align-items:center}
-.list{margin:0;padding:0;list-style:none}.list li{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
-.hero{font-size:24px;font-weight:800;text-align:center;padding:12px 0}.distance{font-size:36px;font-weight:850;text-align:center}
-.greenmode{border:2px solid #547a5f;background:#f3f8f3}
+:root{--bg:#071014;--card:#0d171b;--card2:#101d22;--ink:#f4fbfb;--muted:#91a5a8;--accent:#22e6ff;--accent2:#0db8d1;--line:#203237;--soft:#102b31;--danger:#ff6f6f;--ok:#63f2c0}
+*{box-sizing:border-box}html,body{min-height:100%}body{margin:0;background:radial-gradient(circle at 50% -10%,#12313a 0,#071014 35%,#050b0e 100%);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:rgba(5,12,15,.92);backdrop-filter:blur(12px);color:#fff;padding:15px 15px 13px;position:sticky;top:0;z-index:10;border-bottom:1px solid #173037}header h1{font-size:19px;margin:0;letter-spacing:.12em;text-transform:uppercase}header small{color:var(--muted);letter-spacing:.08em}
+main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13,23,27,.94);border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px;box-shadow:0 8px 30px rgba(0,0,0,.14)}
+.step{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:800;margin-bottom:5px}h2{font-size:19px;margin:0 0 10px}.muted{color:var(--muted);font-size:12px;line-height:1.45}.status{display:flex;justify-content:space-between;align-items:center}.badge{font-size:10px;color:var(--accent);border:1px solid #22535d;background:#0b1d22;padding:5px 8px;border-radius:999px;letter-spacing:.08em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.two{grid-template-columns:repeat(2,1fr)}button{border:1px solid var(--line);background:#0d171b;color:var(--ink);border-radius:12px;padding:12px 8px;min-height:50px;font-size:14px;font-weight:700;transition:.12s ease}button:active{transform:scale(.98)}button.selected{background:var(--soft);border:2px solid var(--accent);box-shadow:0 0 16px rgba(34,230,255,.13);color:#fff}button.primary{background:linear-gradient(180deg,#18d8f1,#0daac2);color:#031014;border-color:var(--accent);width:100%;font-size:16px;box-shadow:0 0 20px rgba(34,230,255,.18)}button.secondary{background:#0a1418;color:#c7d5d7}.row{display:flex;gap:8px}.row>*{flex:1}
+.gps{background:#0b2025;border:1px solid #163b43;border-radius:12px;padding:10px;margin-bottom:9px;font-size:12px}.gps b{display:block;color:#dffcff}.hint{border-left:2px solid var(--accent);padding-left:10px;margin:10px 0}.hidden{display:none!important}.hero{font-size:24px;font-weight:800;text-align:center;padding:12px 0}.list{margin:0;padding:0;list-style:none}.list li{padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.event{border-color:#3a2a2a;background:#1b1214}.event button.selected{border-color:#ff8a8a;background:#2a1719}.flowBack{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}.stat{display:inline-flex;flex-direction:column;min-width:30%;padding:8px}.stat b{font-size:24px}.stat span{font-size:11px;color:var(--muted)}
+.bigPlus{font-size:19px;min-height:64px;letter-spacing:.02em}.sectionTitle{display:flex;justify-content:space-between;align-items:center}.sectionTitle span{font-size:11px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header><h1>Golf Log</h1><small>Runde erfassen</small></header>
+<header><h1>Golf Octopus</h1><small>Hyperfocus on your game.</small></header>
 <main>
-
 <section class="card">
- <div class="status"><div><div class="step">Aktuell</div><h2 id="title">Loch 1 · Schlag 1</h2></div><span class="badge" id="gpsBadge">GPS</span></div>
- <div class="muted" id="context">Neues Loch – Ballposition erfassen.</div>
+ <div class="status"><div><div class="step">Aktuell</div><h2 id="title">Loch 1 · Schlag 1</h2></div><span class="badge" id="gpsBadge">BEREIT</span></div>
+ <div class="muted" id="context">Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.</div>
 </section>
 
 <section class="card" id="positionCard">
- <div class="step">1 · Ballposition</div>
- <h2 id="positionTitle">Wo liegt der Ball?</h2>
- <div class="gps" id="gpsBox"><b>Noch keine Position</b><span>Die Position wird automatisch mit diesem Schlag gespeichert.</span></div>
- <button class="primary" onclick="capturePosition()">📍 Position erfassen</button>
- <div style="height:8px"></div>
- <div class="grid two" id="lieButtons">
-  <button onclick="chooseLie('Tee')">Tee</button><button onclick="chooseLie('Fairway')">Fairway</button>
-  <button onclick="chooseLie('Rough')">Rough</button><button onclick="chooseLie('Bunker')">Bunker</button>
-  <button onclick="chooseLie('Penalty Area')">Penalty Area</button><button onclick="chooseLie('Grün')">Grün</button>
+ <div class="step">1 · Ball erfassen</div>
+ <h2>Wo liegt der Ball?</h2>
+ <div class="gps" id="gpsBox"><b>Noch keine Position</b><span>GPS, Höhe und Zeit werden mit dem Ereignis gespeichert.</span></div>
+ <button class="primary bigPlus" onclick="capturePosition()">＋&nbsp; BALL ERFASSEN</button>
+ <div id="afterPosition" class="hidden">
+  <div style="height:12px"></div>
+  <div class="step">Lage</div>
+  <div class="grid two" id="lieButtons">
+   <button onclick="chooseLie('Tee')">Tee</button><button onclick="chooseLie('Fairway')">Fairway</button>
+   <button onclick="chooseLie('Rough')">Rough</button><button onclick="chooseLie('Bunker')">Bunker</button>
+   <button onclick="chooseLie('Vorgrün')">Vorgrün</button><button onclick="chooseLie('Grün')">Grün</button>
+   <button onclick="chooseLie('Penalty Area')">Penalty Area</button><button onclick="chooseLie('Aus')">Aus</button>
+   <button onclick="chooseLie('Sonstiges')">Sonstiges</button>
+  </div>
+  <p class="muted" id="lieText">Lage noch nicht ausgewählt.</p>
  </div>
- <p class="muted" id="lieText">Lage noch nicht ausgewählt.</p>
 </section>
 
-<section class="card" id="clubCard">
- <div class="step">2 · Schläger</div><h2>Welchen Schläger spielst du?</h2>
+<section class="card hidden" id="whatCard">
+ <div class="step">2 · Ereignis</div>
+ <h2>Was passiert hier?</h2>
+ <div class="grid two">
+  <button onclick="chooseType('shot')">SCHLAG</button>
+  <button class="event" onclick="chooseType('penalty')">STRAFSCHLAG</button>
+  <button onclick="chooseType('drop')">BALL GEDROPPT</button>
+  <button onclick="chooseType('other')">SONSTIGES</button>
+ </div>
+ <div class="hint muted">Jede Ballposition kann ein neuer Schlag oder ein separates Ereignis sein. Du bleibst immer im normalen Erfassungsablauf.</div>
+</section>
+
+<section class="card hidden" id="shotTypeCard">
+ <div class="step">3 · Schlagart</div><h2>Was für ein Schlag?</h2>
+ <div class="grid two">
+  <button onclick="chooseShotType('Voller Schlag')">Voller Schlag</button><button onclick="chooseShotType('Pitch')">Pitch</button>
+  <button onclick="chooseShotType('Chip')">Chip</button><button onclick="chooseShotType('Bunkerschlag')">Bunkerschlag</button>
+  <button onclick="chooseShotType('Putt')">Putt</button><button onclick="chooseShotType('Recovery')">Recovery</button>
+ </div>
+ <p class="muted" id="shotTypeText">Noch keine Schlagart.</p>
+</section>
+
+<section class="card hidden" id="clubCard">
+ <div class="step">4 · Schläger</div><h2>Welchen Schläger spielst du?</h2>
  <div class="grid">
   <button onclick="choose('club','Driver')">Driver</button><button onclick="choose('club','5W')">5W</button><button onclick="choose('club','4i')">4i</button>
   <button onclick="choose('club','5i')">5i</button><button onclick="choose('club','6i')">6i</button><button onclick="choose('club','7i')">7i</button>
@@ -63,8 +78,8 @@ button.secondary{background:#f0f2ef}
  <p class="muted" id="clubText">Noch kein Schläger.</p>
 </section>
 
-<section class="card" id="contactCard">
- <div class="step">3 · Kontakt</div><h2>Wie wurde der Ball getroffen?</h2>
+<section class="card hidden" id="contactCard">
+ <div class="step">5 · Kontakt</div><h2>Wie wurde der Ball getroffen?</h2>
  <div class="grid two">
   <button onclick="choose('contact','Sauber')">Sauber</button><button onclick="choose('contact','Dünn')">Dünn</button>
   <button onclick="choose('contact','Fett')">Fett</button><button onclick="choose('contact','Getoppt')">Getoppt</button>
@@ -74,45 +89,38 @@ button.secondary{background:#f0f2ef}
  <p class="muted" id="contactText">Noch kein Kontakt.</p>
 </section>
 
-<section class="card" id="flightCard">
- <div class="step">4 · Flug</div><h2>Wie ist der Ball geflogen?</h2>
+<section class="card hidden" id="flightCard">
+ <div class="step">6 · Flug</div><h2>Wie ist der Ball geflogen?</h2>
  <div class="grid two">
-  <button onclick="choose('flight','Normal')">Normal</button><button onclick="choose('flight','Flach / Stinger')">Flach / Stinger</button>
-  <button onclick="choose('flight','Hoch')">Hoch</button><button onclick="choose('flight','Push / rechts')">Push / rechts</button>
-  <button onclick="choose('flight','Pull / links')">Pull / links</button><button onclick="choose('flight','Hook')">Hook</button>
-  <button onclick="choose('flight','Slice')">Slice</button><button onclick="choose('flight','Sonstiger')">Sonstiger</button>
+  <button onclick="choose('flight','Hoch')">Hoch</button><button onclick="choose('flight','Normal')">Normal</button>
+  <button onclick="choose('flight','Flach')">Flach</button><button onclick="choose('flight','Stinger')">Stinger</button>
+  <button onclick="choose('flight','Links')">Links</button><button onclick="choose('flight','Gerade')">Gerade</button>
+  <button onclick="choose('flight','Rechts')">Rechts</button><button onclick="choose('flight','Sonstiger')">Sonstiger</button>
  </div>
  <p class="muted" id="flightText">Noch kein Flug.</p>
 </section>
 
-<section class="card" id="resultCard">
- <div class="step">5 · Ergebnis</div><h2>Wo liegt der Ball jetzt?</h2>
+<section class="card hidden" id="resultCard">
+ <div class="step">7 · Ergebnis</div><h2>Wo liegt der Ball jetzt?</h2>
  <div class="grid two">
   <button onclick="chooseResult('Fairway')">Fairway</button><button onclick="chooseResult('Rough')">Rough</button>
-  <button onclick="chooseResult('Bunker')">Bunker</button><button onclick="chooseResult('Grün')">Grün</button>
-  <button onclick="chooseResult('Penalty Area')">Penalty Area</button><button onclick="chooseResult('Aus')">Aus</button>
+  <button onclick="chooseResult('Bunker')">Bunker</button><button onclick="chooseResult('Vorgrün')">Vorgrün</button>
+  <button onclick="chooseResult('Grün')">Grün</button><button onclick="chooseResult('Penalty Area')">Penalty Area</button>
+  <button onclick="chooseResult('Aus')">Aus</button><button onclick="chooseResult('Sonstiges')">Sonstiges</button>
  </div>
- <div style="height:9px"></div>
- <button class="primary" onclick="saveShot()">✓ Schlag speichern</button>
+ <div style="height:9px"></div><button class="primary" onclick="saveShot()">✓ SCHLAG SPEICHERN</button>
+ <div class="flowBack">Danach geht es automatisch zurück zu „Ball erfassen“.</div>
 </section>
 
-<section class="card greenmode hidden" id="greenCard">
- <div class="step">Grün-Modus</div>
- <div class="hero">⛳ Loch erfassen</div>
- <p class="muted">Der nächste Klick speichert deine aktuelle Position. Die App berechnet daraus die Putt-Distanzen automatisch. Danach werden die Putts einzeln erfasst.</p>
- <button class="primary" onclick="startGreenMode()">📍 Grünposition erfassen</button>
- <div id="greenInfo" class="hidden">
-   <div class="distance" id="greenDistance">–</div>
-   <p class="muted" style="text-align:center">geschätzte Distanz vom letzten Ball zur Grünposition</p>
-   <div class="row"><button class="secondary" onclick="choose('puttResult','Gelocht')">Putt gelocht</button><button class="secondary" onclick="choose('puttResult','Daneben')">Putt daneben</button></div>
-   <div style="height:8px"></div>
-   <button class="primary" onclick="savePutt()">Putt speichern</button>
- </div>
+<section class="card hidden" id="eventSaveCard">
+ <div class="step">Ereignis</div><h2 id="eventTitle">Ereignis speichern</h2>
+ <p class="muted" id="eventText"></p>
+ <button class="primary" onclick="saveEvent()">✓ EREIGNIS SPEICHERN</button>
 </section>
 
 <section class="card">
- <div class="step">Schlagfolge</div>
- <ul class="list" id="shots"><li>Noch keine Schläge.</li></ul>
+ <div class="sectionTitle"><div><div class="step">Schlagfolge</div><h2 style="margin-bottom:0">Dieses Loch</h2></div><span id="holeCount"></span></div>
+ <ul class="list" id="shots"><li>Noch keine Einträge.</li></ul>
 </section>
 
 <section class="card">
@@ -123,168 +131,78 @@ button.secondary{background:#f0f2ef}
 </section>
 
 <section class="card hidden" id="roundSummaryCard">
- <div class="step">Runde abgeschlossen</div>
- <h2>Zusammenfassung</h2>
- <div id="roundSummary"></div>
- <div style="height:10px"></div>
- <div class="row"><button class="secondary" onclick="exportCSV()">CSV exportieren</button><button class="primary" onclick="newRound()">Neue Runde</button></div>
+ <div class="step">Runde abgeschlossen</div><h2>Zusammenfassung</h2><div id="roundSummary"></div>
+ <div style="height:10px"></div><div class="row"><button class="secondary" onclick="exportCSV()">CSV exportieren</button><button class="primary" onclick="newRound()">Neue Runde</button></div>
 </section>
-<section class="card hidden" id="pauseCard">
- <div class="step">Runde pausiert</div>
- <div class="hero">⏸ Pause</div>
- <p class="muted" style="text-align:center">Deine aktuelle Runde bleibt gespeichert. Du kannst später genau hier weitermachen.</p>
- <button class="primary" onclick="resumeRound()">▶ Runde fortsetzen</button>
-</section>
+<section class="card hidden" id="pauseCard"><div class="step">Runde pausiert</div><div class="hero">⏸ Pause</div><p class="muted" style="text-align:center">Deine aktuelle Runde bleibt gespeichert. Du kannst genau hier weitermachen.</p><button class="primary" onclick="resumeRound()">▶ Runde fortsetzen</button></section>
 </main>
-
 <script>
-let state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},green:null};
+const STORAGE='golfOctopusV5';
+let state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},paused:false};
 const $=id=>document.getElementById(id);
-function save(){localStorage.setItem('golfLogV3',JSON.stringify(state))}
-function choose(k,v){state.current[k]=v;refresh()}
-function chooseLie(v){choose('lie',v)}
-function chooseResult(v){
- state.current.result=v;
- if(v==='Grün'){$('greenCard').classList.remove('hidden');$('resultCard').classList.add('hidden')}
- else refresh()
-}
+function save(){localStorage.setItem(STORAGE,JSON.stringify(state))}
+function holeShots(){return state.shots.filter(s=>s.hole===state.hole)}
+function resetFlow(){state.current={};['afterPosition','whatCard','shotTypeCard','clubCard','contactCard','flightCard','resultCard','eventSaveCard'].forEach(id=>$(id).classList.add('hidden'));$('gpsBadge').textContent='BEREIT';$('gpsBox').innerHTML='<b>Noch keine Position</b><span>GPS, Höhe und Zeit werden mit dem Ereignis gespeichert.</span>';refresh()}
 function capturePosition(){
- if(!navigator.geolocation){$('gpsBox').innerHTML='<b>GPS nicht verfügbar</b><span>Standortzugriff wird von diesem Browser nicht unterstützt.</span>';return}
- $('gpsBox').innerHTML='<b>GPS wird erfasst …</b><span>Bitte kurz warten.</span>';
- navigator.geolocation.getCurrentPosition(p=>{
-   state.current.lat=p.coords.latitude;state.current.lng=p.coords.longitude;state.current.accuracy=Math.round(p.coords.accuracy);
-   $('gpsBox').innerHTML=`<b>Position gespeichert ✓</b><span>${state.current.lat.toFixed(6)}, ${state.current.lng.toFixed(6)} · ±${state.current.accuracy} m</span>`;
-   refresh()
- },()=>{$('gpsBox').innerHTML='<b>GPS fehlgeschlagen</b><span>Standortfreigabe prüfen.</span>'},{enableHighAccuracy:true,timeout:12000,maximumAge:0})
+ if(!navigator.geolocation){setGPSFailure('GPS nicht verfügbar.');return}
+ $('gpsBadge').textContent='GPS …';$('gpsBox').innerHTML='<b>Position wird erfasst …</b><span>Bitte kurz warten.</span>';
+ navigator.geolocation.getCurrentPosition(async p=>{
+  state.current.lat=p.coords.latitude;state.current.lng=p.coords.longitude;state.current.accuracy=Math.round(p.coords.accuracy);state.current.time=new Date().toISOString();
+  $('gpsBox').innerHTML=`<b>Position gespeichert ✓</b><span>${state.current.lat.toFixed(6)}, ${state.current.lng.toFixed(6)} · ±${state.current.accuracy} m</span>`;$('gpsBadge').textContent='ERFASST';
+  // Browser geolocation does not provide altitude reliably; preserve it when available.
+  if(p.coords.altitude!=null) state.current.altitude=Math.round(p.coords.altitude);
+  $('afterPosition').classList.remove('hidden');refresh();
+ },()=>setGPSFailure('Standortzugriff fehlgeschlagen. Bitte GPS-Freigabe prüfen.'),{enableHighAccuracy:true,timeout:12000,maximumAge:0})
 }
-function dist(a,b){
- if(!a||!b||a.lat==null||b.lat==null)return null;
- const R=6371000,r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lng-a.lng);
- const x=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;
- return Math.round(2*R*Math.asin(Math.sqrt(x)));
-}
-function saveShot(){
- if(!state.current.club||!state.current.lie){alert('Bitte Ballposition/Lage und Schläger auswählen.');return}
- const prev=state.shots.filter(s=>s.hole===state.hole).slice(-1)[0];
- const s={roundId:state.roundId,hole:state.hole,shot:state.shotNo,time:new Date().toISOString(),...state.current};
- s.distanceToPreviousM=dist(prev,s);
- state.shots.push(s);state.shotNo++;state.current={};save();refresh()
-}
-function startGreenMode(){
- if(!state.current.lat){alert('Bitte zuerst die Grünposition über „Position erfassen“ speichern.');return}
- const last=state.shots.filter(s=>s.hole===state.hole).slice(-1)[0];
- state.green={lat:state.current.lat,lng:state.current.lng,accuracy:state.current.accuracy,fromLastM:dist(last,state.current)};
- $('greenDistance').textContent=state.green.fromLastM!=null?state.green.fromLastM+' m':'Distanz nicht verfügbar';
- $('greenInfo').classList.remove('hidden');
-}
-function savePutt(){
- const res=state.current.puttResult;if(!res){alert('Bitte „gelocht“ oder „daneben“ auswählen.');return}
- const previous=state.green;
- const lastPutt=state.shots.filter(s=>s.hole===state.hole&&s.type==='putt').slice(-1)[0];
- let p={roundId:state.roundId,hole:state.hole,shot:state.shotNo,type:'putt',club:'Putter',result:res,time:new Date().toISOString()};
- if(!lastPutt){p.lat=previous.lat;p.lng=previous.lng;p.accuracy=previous.accuracy;p.distanceToPreviousM=previous.fromLastM}
- else{
-   // For the prototype, a missed putt gets a new GPS point from the current position capture.
-   if(state.current.lat&&state.current.lng){p.lat=state.current.lat;p.lng=state.current.lng;p.accuracy=state.current.accuracy;p.distanceToPreviousM=dist(lastPutt,p)}
+function setGPSFailure(msg){$('gpsBadge').textContent='GPS FEHLER';$('gpsBox').innerHTML=`<b>${msg}</b><span>Ohne Position kann dieser Prototyp den Eintrag nicht sauber georeferenzieren.</span>`}
+function chooseLie(v){state.current.lie=v;state.current.type=null;refresh();$('whatCard').classList.remove('hidden');$('whatCard').scrollIntoView({behavior:'smooth',block:'center'})}
+function chooseType(v){state.current.type=v;refresh();
+ if(v==='shot'){$('shotTypeCard').classList.remove('hidden');$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'})}
+ else {$('eventSaveCard').classList.remove('hidden');$('shotTypeCard').classList.add('hidden');$('clubCard').classList.add('hidden');$('contactCard').classList.add('hidden');$('flightCard').classList.add('hidden');$('resultCard').classList.add('hidden');
+  const names={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'};$('eventTitle').textContent=names[v]||'Ereignis';$('eventText').textContent=v==='penalty'?'Ein Strafschlag wird als eigener Schlag gezählt.':v==='drop'?'Der Drop wird als Ereignis gespeichert, aber nicht als zusätzlicher Schlag gezählt.':'Das Ereignis wird mit GPS und Zeit gespeichert.';
+  $('eventSaveCard').scrollIntoView({behavior:'smooth',block:'center'})
  }
- state.shots.push(p);state.shotNo++;state.current={};state.green=null;save();
- if(res==='Gelocht'){finishHole();}else{alert('Putt gespeichert. Für den nächsten Putt Position erfassen.');refresh()}
 }
-function finishHole(){const n=state.shots.filter(s=>s.hole===state.hole).length;if(!n){alert('Noch keine Schläge erfasst.');return}alert(`Loch ${state.hole}: ${n} Schläge`);save()}
-function undo(){let i=state.shots.map(s=>s.hole).lastIndexOf(state.hole);if(i>=0){state.shots.splice(i,1);state.shotNo=Math.max(1,state.shotNo-1);save();refresh()}}
-function nextHole(){if(state.hole<18){state.hole++;state.shotNo=state.shots.filter(s=>s.hole===state.hole).length+1;state.current={};state.green=null;save();refresh()}}
-function prevHole(){if(state.hole>1){state.hole--;state.shotNo=state.shots.filter(s=>s.hole===state.hole).length+1;state.current={};state.green=null;refresh()}}
-function exportCSV(){
- const cols=['roundId','hole','shot','type','time','lie','club','contact','flight','result','puttResult','lat','lng','accuracy','distanceToPreviousM'];
- const lines=[cols.join(';'),...state.shots.map(s=>cols.map(c=>JSON.stringify(s[c]??'')).join(';'))];
- const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golf-log-'+new Date().toISOString().slice(0,10)+'.csv';a.click()
+function chooseShotType(v){state.current.shotType=v;state.current.club=v==='Putt'?'Putter':null;refresh();
+ $('clubCard').classList.remove('hidden');$('contactCard').classList.remove('hidden');$('flightCard').classList.remove('hidden');$('resultCard').classList.remove('hidden');
+ if(v==='Putt'){$('clubCard').classList.add('hidden');$('contactCard').classList.add('hidden');$('flightCard').classList.add('hidden');}
+ else if(v==='Bunkerschlag'){$('flightCard').classList.remove('hidden');}
+ $('clubCard').scrollIntoView({behavior:'smooth',block:'center'})
 }
-
-function markSelections(){
-  document.querySelectorAll('button[data-choice]').forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll('button[data-choice]').forEach(b=>{
-    const key=b.dataset.choice, val=b.dataset.value;
-    if(state.current[key]===val)b.classList.add('selected');
-  });
-  // Green-mode putting result selection
-  document.querySelectorAll('button[data-putt]').forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll('button[data-putt]').forEach(b=>{
-    if(state.current.puttResult===b.dataset.putt)b.classList.add('selected');
-  });
+function choose(k,v){state.current[k]=v;refresh()}
+function chooseResult(v){state.current.result=v;refresh()}
+function dist(a,b){if(!a||!b||a.lat==null||b.lat==null)return null;const R=6371000,r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lng-a.lng);const x=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(x)))}
+function saveShot(){
+ const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
+ if(!c.shotType){alert('Bitte Schlagart auswählen.');return}
+ if(c.shotType!=='Putt'&&!c.club){alert('Bitte Schläger auswählen.');return}
+ const prev=holeShots().slice(-1)[0];
+ const s={roundId:state.roundId,hole:state.hole,shot:state.shotNo,time:c.time||new Date().toISOString(),type:'shot',lie:c.lie,shotType:c.shotType,club:c.club||'Putter',contact:c.contact||'',flight:c.flight||'',result:c.result||'',lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,distanceToPreviousM:dist(prev,c)};
+ state.shots.push(s);state.shotNo++;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
 }
-function addChoiceMetadata(){
-  const maps=[
-    ['lieButtons','lie'],['clubCard','club'],['contactCard','contact'],['flightCard','flight'],['resultCard','result']
-  ];
-  maps.forEach(([id,key])=>{
-    const el=document.getElementById(id); if(!el)return;
-    el.querySelectorAll('button[onclick]').forEach(btn=>{
-      const m=btn.getAttribute('onclick')?.match(/(?:chooseLie|chooseResult|choose)\('([^']+)'(?:,'([^']+)')?\)/);
-      if(!m)return;
-      const value=m[2]||m[1];
-      btn.dataset.choice=key; btn.dataset.value=value;
-    });
-  });
-  document.querySelectorAll('#greenCard button[onclick*="puttResult"]').forEach(btn=>{
-    const m=btn.getAttribute('onclick').match(/'([^']+)'/);
-    if(m){btn.dataset.putt=m[1];}
-  });
+function saveEvent(){
+ const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
+ const isPenalty=c.type==='penalty';
+ const e={roundId:state.roundId,hole:state.hole,type:'event',eventType:c.type,lie:c.lie,time:c.time||new Date().toISOString(),lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude};
+ if(isPenalty){e.shot=state.shotNo;state.shotNo++} else e.shot=null;
+ state.shots.push(e);save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
 }
-function finishRound(){
-  const holes=[...new Set(state.shots.map(s=>s.hole))].sort((a,b)=>a-b);
-  if(!holes.length){alert('Noch keine Schläge erfasst.');return}
-  const score=state.shots.length;
-  const putts=state.shots.filter(s=>s.type==='putt').length;
-  const greens=holes.filter(h=>state.shots.some(s=>s.hole===h&&s.result==='Grün')).length;
-  const penalties=state.shots.filter(s=>s.result==='Penalty Area'||s.result==='Aus').length;
-  $('roundSummary').innerHTML=`
-    <div class="summary">
-      <div class="stat"><b>${holes.length}</b><span>Löcher erfasst</span></div>
-      <div class="stat"><b>${score}</b><span>Schläge</span></div>
-      <div class="stat"><b>${putts}</b><span>Putts</span></div>
-      <div class="stat"><b>${greens}</b><span>GIR</span></div>
-      <div class="stat"><b>${penalties}</b><span>Penaltys</span></div>
-      <div class="stat"><b>${state.hole}</b><span>zuletzt Loch</span></div>
-    </div>
-    <p class="muted">Die Runde wurde lokal gespeichert. Sie kann jetzt exportiert oder mit einer neuen Runde fortgesetzt werden.</p>`;
-  $('roundSummaryCard').classList.remove('hidden');
-  save();
-  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-}
-function pauseRound(){
-  state.paused=true; save();
-  $('pauseCard').classList.remove('hidden');
-  $('context').textContent='Runde pausiert – alle Daten sind gespeichert.';
-}
-function resumeRound(){
-  state.paused=false; save();
-  $('pauseCard').classList.add('hidden');
-  refresh();
-}
-function newRound(){
-  if(!confirm('Neue Runde starten? Die aktuelle Runde bleibt nicht als eigene Runde in diesem Prototyp archiviert. Exportiere sie vorher, wenn du sie behalten möchtest.'))return;
-  state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},green:null,paused:false};
-  save();
-  $('roundSummaryCard').classList.add('hidden');
-  $('pauseCard').classList.add('hidden');
-  refresh();
-}
-
+function undo(){const arr=holeShots();if(!arr.length){alert('Nichts zum Rückgängig machen.');return}const last=arr[arr.length-1];state.shots.splice(state.shots.lastIndexOf(last),1);if(last.type==='shot'||last.eventType==='penalty')state.shotNo=Math.max(1,state.shotNo-1);save();resetFlow()}
+function finishHole(){if(!holeShots().length){alert('Noch keine Einträge erfasst.');return}alert(`Loch ${state.hole}: ${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge.`);save()}
+function nextHole(){if(state.hole<18){state.hole++;state.shotNo=holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length+1;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})}}
+function prevHole(){if(state.hole>1){state.hole--;state.shotNo=holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length+1;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})}}
+function pauseRound(){state.paused=true;save();$('pauseCard').classList.remove('hidden');$('context').textContent='Runde pausiert – alle Daten sind gespeichert.'}
+function resumeRound(){state.paused=false;save();$('pauseCard').classList.add('hidden');refresh()}
+function finishRound(){const holes=[...new Set(state.shots.map(s=>s.hole))].sort((a,b)=>a-b);if(!holes.length){alert('Noch keine Einträge erfasst.');return}const strokes=state.shots.filter(s=>s.type==='shot'||s.eventType==='penalty').length;const putts=state.shots.filter(s=>s.shotType==='Putt').length;const penalties=state.shots.filter(s=>s.eventType==='penalty').length;$('roundSummary').innerHTML=`<div>${[['Löcher',holes.length],['Schläge',strokes],['Putts',putts],['Penaltys',penalties]].map(x=>`<span class="stat"><b>${x[1]}</b><span>${x[0]}</span></span>`).join('')}</div><p class="muted">Alle Einträge bleiben lokal gespeichert und können als CSV exportiert werden.</p>`;$('roundSummaryCard').classList.remove('hidden');save();window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function newRound(){if(!confirm('Neue Runde starten? Exportiere die aktuelle Runde vorher, wenn du sie behalten möchtest.'))return;state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},paused:false};save();$('roundSummaryCard').classList.add('hidden');$('pauseCard').classList.add('hidden');resetFlow();window.scrollTo({top:0,behavior:'smooth'})}
+function exportCSV(){const cols=['roundId','hole','shot','type','eventType','time','lie','shotType','club','contact','flight','result','lat','lng','accuracy','altitude','distanceToPreviousM'];const lines=[cols.join(';'),...state.shots.map(s=>cols.map(c=>JSON.stringify(s[c]??'')).join(';'))];const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golf-octopus-'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
+function markSelections(){document.querySelectorAll('button[data-choice]').forEach(b=>b.classList.toggle('selected',state.current[b.dataset.choice]===b.dataset.value))}
+function addChoiceMetadata(){document.querySelectorAll('button[onclick]').forEach(btn=>{const fn=btn.getAttribute('onclick')||'';let m=fn.match(/chooseLie\('([^']+)'\)/);if(m){btn.dataset.choice='lie';btn.dataset.value=m[1];return}m=fn.match(/choose\('([^']+)'\,'([^']+)'\)/);if(m){btn.dataset.choice=m[1];btn.dataset.value=m[2];return}m=fn.match(/chooseResult\('([^']+)'\)/);if(m){btn.dataset.choice='result';btn.dataset.value=m[1];return}m=fn.match(/chooseShotType\('([^']+)'\)/);if(m){btn.dataset.choice='shotType';btn.dataset.value=m[1]}})}
 function refresh(){
- if(state.paused){ $('pauseCard').classList.remove('hidden'); }
- $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;
- $('context').textContent=state.shots.filter(s=>s.hole===state.hole).length?`Bisher ${state.shots.filter(s=>s.hole===state.hole).length} Schläge erfasst.`:'Neues Loch – Ballposition erfassen.';
- $('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';
- $('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';
- $('contactText').textContent=state.current.contact?`Ausgewählt: ${state.current.contact}`:'Noch kein Kontakt.';
- $('flightText').textContent=state.current.flight?`Ausgewählt: ${state.current.flight}`:'Noch kein Flug.';
- const arr=state.shots.filter(s=>s.hole===state.hole),ul=$('shots');ul.innerHTML='';
- if(!arr.length){ul.innerHTML='<li>Noch keine Schläge.</li>'}else arr.forEach(s=>{let x=document.createElement('li');x.innerHTML=`<b>${s.shot}.</b> ${s.type==='putt'?'Putt':s.club||'–'} · ${s.contact||''} ${s.flight||''} → ${s.result||s.puttResult||'–'} ${s.distanceToPreviousM!=null?'· '+s.distanceToPreviousM+' m':''}`;ul.appendChild(x)});
- markSelections();
+ $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=state.paused?'Runde pausiert':holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('contactText').textContent=state.current.contact?`Ausgewählt: ${state.current.contact}`:'Noch kein Kontakt.';$('flightText').textContent=state.current.flight?`Ausgewählt: ${state.current.flight}`:'Noch kein Flug.';$('holeCount').textContent=`${holeShots().length} Einträge`;
+ const ul=$('shots');const arr=holeShots();ul.innerHTML='';if(!arr.length)ul.innerHTML='<li>Noch keine Einträge.</li>';else arr.forEach(s=>{const li=document.createElement('li');if(s.type==='event'){const label={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'}[s.eventType]||'Ereignis';li.innerHTML=`<b>${s.shot? s.shot+'.':''}</b> ${label} · ${s.lie||'–'}`;}else{li.innerHTML=`<b>${s.shot}.</b> ${s.shotType||'Schlag'} · ${s.club||''} ${s.contact? '· '+s.contact:''} ${s.result?'→ '+s.result:''}${s.distanceToPreviousM!=null?' · '+s.distanceToPreviousM+' m':''}`;}ul.appendChild(li)});markSelections()
 }
-const old=localStorage.getItem('golfLogV3');if(old){try{state=JSON.parse(old)}catch(e){}}
 addChoiceMetadata();
-refresh();
-markSelections();
+const old=localStorage.getItem(STORAGE);if(old){try{state=JSON.parse(old)}catch(e){}}refresh();
 </script>
 </body></html>

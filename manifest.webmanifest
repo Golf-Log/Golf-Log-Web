@@ -1,9 +1,9 @@
 {
-  "name": "Golf Log",
-  "short_name": "Golf Log",
+  "name": "Golf Octopus",
+  "short_name": "Golf Octopus",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f5f1",
-  "theme_color": "#173b2a",
+  "background_color": "#071014",
+  "theme_color": "#071014",
   "lang": "de"
 }
