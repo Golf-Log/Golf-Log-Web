@@ -78,9 +78,13 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 <section class="card hidden" id="shotTypeCard">
  <div class="step">3 · Schlagart</div><h2>Was für ein Schlag?</h2>
  <div class="grid two" id="shotTypeButtons">
-  <button class="quick" id="puttBtn" onclick="chooseShotType('Putt')">Putt</button><button onclick="chooseShotType('Voller Schlag')">Voller Schlag</button>
-  <button onclick="chooseShotType('Pitch')">Pitch</button><button onclick="chooseShotType('Chip')">Chip</button>
-  <button onclick="chooseShotType('Bunkerschlag')">Bunkerschlag</button><button onclick="chooseShotType('Recovery')">Recovery</button>
+  <button class="quick" data-shot="Putt" onclick="chooseShotType('Putt')">Putt</button>
+  <button data-shot="Drive" onclick="chooseShotType('Drive')">Drive</button>
+  <button data-shot="Voller Schlag" onclick="chooseShotType('Voller Schlag')">Voller Schlag</button>
+  <button data-shot="Pitch" onclick="chooseShotType('Pitch')">Pitch</button>
+  <button data-shot="Chip" onclick="chooseShotType('Chip')">Chip</button>
+  <button data-shot="Bunkerschlag" onclick="chooseShotType('Bunkerschlag')">Bunkerschlag</button>
+  <button data-shot="Recovery" onclick="chooseShotType('Recovery')">Recovery</button>
  </div>
  <p class="muted" id="shotTypeText">Noch keine Schlagart.</p>
 </section>
@@ -119,7 +123,7 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 
 <section class="card hidden" id="puttCard">
  <div class="step">4 · Putt</div><h2>Wie ist der Putt ausgegangen?</h2>
- <div class="grid two"><button class="primary" style="grid-column:1/-1" onclick="chooseResult('Ball gelocht');saveShot()">✓ BALL GELOCHT</button>
+ <div class="grid two"><button class="primary" style="grid-column:1/-1" onclick="holeOut()">✓ BALL GELOCHT</button>
  <button onclick="chooseResult('Putt vorbei')">Putt vorbei</button><button onclick="chooseResult('Putt zu kurz')">Putt zu kurz</button></div>
  <div style="height:10px"></div><button class="secondary" style="width:100%" onclick="savePutt()">Putt speichern</button>
 </section>
@@ -182,7 +186,22 @@ function capturePosition(){
  },()=>setGPSFailure('Standortzugriff fehlgeschlagen. Bitte GPS-Freigabe prüfen.'),{enableHighAccuracy:true,timeout:12000,maximumAge:0})
 }
 function setGPSFailure(msg){$('gpsBadge').textContent='GPS FEHLER';$('gpsBox').innerHTML=`<b>${msg}</b><span>Ohne Position kann dieser Prototyp den Eintrag nicht sauber georeferenzieren.</span>`}
-function chooseLie(v){state.current.lie=v;state.current.type=null;refresh();$('whatCard').classList.remove('hidden');if(v==='Grün'){$('puttBtn').classList.add('selected');$('shotTypeButtons').prepend($('puttBtn'));}else{$('puttBtn').classList.remove('selected');} $('whatCard').scrollIntoView({behavior:'smooth',block:'center'})}
+function orderShotTypes(lie){
+ const order={
+  'Grün':['Putt','Chip','Pitch','Voller Schlag','Recovery','Bunkerschlag','Drive'],
+  'Bunker':['Bunkerschlag','Pitch','Chip','Voller Schlag','Recovery','Putt','Drive'],
+  'Tee':['Drive','Voller Schlag','Recovery','Pitch','Chip','Putt','Bunkerschlag'],
+  'Fairway':['Voller Schlag','Pitch','Chip','Recovery','Drive','Putt','Bunkerschlag'],
+  'Rough':['Voller Schlag','Recovery','Pitch','Chip','Bunkerschlag','Putt','Drive'],
+  'Vorgrün':['Chip','Pitch','Putt','Voller Schlag','Recovery','Bunkerschlag','Drive']
+ };
+ const rank=order[lie]||order['Fairway'];
+ const box=$('shotTypeButtons');
+ [...box.querySelectorAll('[data-shot]')].sort((a,b)=>rank.indexOf(a.dataset.shot)-rank.indexOf(b.dataset.shot)).forEach(b=>box.appendChild(b));
+ [...box.querySelectorAll('[data-shot]')].forEach(b=>b.classList.remove('quick'));
+ const first=box.querySelector(`[data-shot="${rank[0]}"]`); if(first) first.classList.add('quick');
+}
+function chooseLie(v){state.current.lie=v;state.current.type=null;state.current.shotType=null;refresh();$('whatCard').classList.remove('hidden');orderShotTypes(v); $('whatCard').scrollIntoView({behavior:'smooth',block:'center'})}
 function chooseType(v){state.current.type=v;refresh();
  if(v==='shot'){$('shotTypeCard').classList.remove('hidden');$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'})}
  else {$('eventSaveCard').classList.remove('hidden');$('shotTypeCard').classList.add('hidden');$('detailsCard').classList.add('hidden');$('puttCard').classList.add('hidden');
@@ -208,6 +227,16 @@ function saveShot(){
  state.shots.push(s);state.shotNo++;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
 }
 
+function holeOut(){
+ state.current.result='Ball gelocht';
+ const c=state.current;if(!c.lat||!c.lng||c.lie!=='Grün'){alert('Bitte zuerst Ballposition und Grün auswählen.');return}
+ const prev=holeShots().slice(-1)[0];
+ const s={roundId:state.roundId,hole:state.hole,shot:state.shotNo,time:c.time||new Date().toISOString(),type:'shot',lie:'Grün',shotType:'Putt',club:'Putter',contact:'',flight:'',result:'Ball gelocht',holed:true,lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,distanceToPreviousM:dist(prev,c)};
+ state.shots.push(s);save();
+ const completedHole=state.hole;
+ if(state.hole<18){state.hole++;state.shotNo=1;resetFlow();save();window.scrollTo({top:0,behavior:'smooth'});alert(`Loch ${completedHole} beendet. Weiter mit Loch ${state.hole}.`);}
+ else {resetFlow();finishRound();}
+}
 function savePutt(){
  const c=state.current;if(!c.lat||!c.lng||c.lie!=='Grün'){alert('Bitte zuerst Ballposition und Grün auswählen.');return}
  if(!c.shotType||c.shotType!=='Putt'){alert('Bitte Putt auswählen.');return}
