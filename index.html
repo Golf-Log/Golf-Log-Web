@@ -118,7 +118,22 @@ button.secondary{background:#f0f2ef}
 <section class="card">
  <div class="row"><button class="secondary" onclick="undo()">↶ Rückgängig</button><button class="secondary" onclick="finishHole()">Loch beenden</button></div>
  <div style="height:8px"></div><div class="row"><button class="secondary" onclick="prevHole()">← Zurück</button><button class="secondary" onclick="nextHole()">Nächstes Loch →</button></div>
+ <div style="height:8px"></div><div class="row"><button class="secondary" onclick="pauseRound()">⏸ Runde pausieren</button><button class="secondary" onclick="finishRound()">🏁 Runde beenden</button></div>
  <div style="height:8px"></div><button class="secondary" onclick="exportCSV()">CSV exportieren</button>
+</section>
+
+<section class="card hidden" id="roundSummaryCard">
+ <div class="step">Runde abgeschlossen</div>
+ <h2>Zusammenfassung</h2>
+ <div id="roundSummary"></div>
+ <div style="height:10px"></div>
+ <div class="row"><button class="secondary" onclick="exportCSV()">CSV exportieren</button><button class="primary" onclick="newRound()">Neue Runde</button></div>
+</section>
+<section class="card hidden" id="pauseCard">
+ <div class="step">Runde pausiert</div>
+ <div class="hero">⏸ Pause</div>
+ <p class="muted" style="text-align:center">Deine aktuelle Runde bleibt gespeichert. Du kannst später genau hier weitermachen.</p>
+ <button class="primary" onclick="resumeRound()">▶ Runde fortsetzen</button>
 </section>
 </main>
 
@@ -184,7 +199,79 @@ function exportCSV(){
  const lines=[cols.join(';'),...state.shots.map(s=>cols.map(c=>JSON.stringify(s[c]??'')).join(';'))];
  const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golf-log-'+new Date().toISOString().slice(0,10)+'.csv';a.click()
 }
+
+function markSelections(){
+  document.querySelectorAll('button[data-choice]').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('button[data-choice]').forEach(b=>{
+    const key=b.dataset.choice, val=b.dataset.value;
+    if(state.current[key]===val)b.classList.add('selected');
+  });
+  // Green-mode putting result selection
+  document.querySelectorAll('button[data-putt]').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('button[data-putt]').forEach(b=>{
+    if(state.current.puttResult===b.dataset.putt)b.classList.add('selected');
+  });
+}
+function addChoiceMetadata(){
+  const maps=[
+    ['lieButtons','lie'],['clubCard','club'],['contactCard','contact'],['flightCard','flight'],['resultCard','result']
+  ];
+  maps.forEach(([id,key])=>{
+    const el=document.getElementById(id); if(!el)return;
+    el.querySelectorAll('button[onclick]').forEach(btn=>{
+      const m=btn.getAttribute('onclick')?.match(/(?:chooseLie|chooseResult|choose)\('([^']+)'(?:,'([^']+)')?\)/);
+      if(!m)return;
+      const value=m[2]||m[1];
+      btn.dataset.choice=key; btn.dataset.value=value;
+    });
+  });
+  document.querySelectorAll('#greenCard button[onclick*="puttResult"]').forEach(btn=>{
+    const m=btn.getAttribute('onclick').match(/'([^']+)'/);
+    if(m){btn.dataset.putt=m[1];}
+  });
+}
+function finishRound(){
+  const holes=[...new Set(state.shots.map(s=>s.hole))].sort((a,b)=>a-b);
+  if(!holes.length){alert('Noch keine Schläge erfasst.');return}
+  const score=state.shots.length;
+  const putts=state.shots.filter(s=>s.type==='putt').length;
+  const greens=holes.filter(h=>state.shots.some(s=>s.hole===h&&s.result==='Grün')).length;
+  const penalties=state.shots.filter(s=>s.result==='Penalty Area'||s.result==='Aus').length;
+  $('roundSummary').innerHTML=`
+    <div class="summary">
+      <div class="stat"><b>${holes.length}</b><span>Löcher erfasst</span></div>
+      <div class="stat"><b>${score}</b><span>Schläge</span></div>
+      <div class="stat"><b>${putts}</b><span>Putts</span></div>
+      <div class="stat"><b>${greens}</b><span>GIR</span></div>
+      <div class="stat"><b>${penalties}</b><span>Penaltys</span></div>
+      <div class="stat"><b>${state.hole}</b><span>zuletzt Loch</span></div>
+    </div>
+    <p class="muted">Die Runde wurde lokal gespeichert. Sie kann jetzt exportiert oder mit einer neuen Runde fortgesetzt werden.</p>`;
+  $('roundSummaryCard').classList.remove('hidden');
+  save();
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function pauseRound(){
+  state.paused=true; save();
+  $('pauseCard').classList.remove('hidden');
+  $('context').textContent='Runde pausiert – alle Daten sind gespeichert.';
+}
+function resumeRound(){
+  state.paused=false; save();
+  $('pauseCard').classList.add('hidden');
+  refresh();
+}
+function newRound(){
+  if(!confirm('Neue Runde starten? Die aktuelle Runde bleibt nicht als eigene Runde in diesem Prototyp archiviert. Exportiere sie vorher, wenn du sie behalten möchtest.'))return;
+  state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},green:null,paused:false};
+  save();
+  $('roundSummaryCard').classList.add('hidden');
+  $('pauseCard').classList.add('hidden');
+  refresh();
+}
+
 function refresh(){
+ if(state.paused){ $('pauseCard').classList.remove('hidden'); }
  $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;
  $('context').textContent=state.shots.filter(s=>s.hole===state.hole).length?`Bisher ${state.shots.filter(s=>s.hole===state.hole).length} Schläge erfasst.`:'Neues Loch – Ballposition erfassen.';
  $('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';
@@ -193,8 +280,11 @@ function refresh(){
  $('flightText').textContent=state.current.flight?`Ausgewählt: ${state.current.flight}`:'Noch kein Flug.';
  const arr=state.shots.filter(s=>s.hole===state.hole),ul=$('shots');ul.innerHTML='';
  if(!arr.length){ul.innerHTML='<li>Noch keine Schläge.</li>'}else arr.forEach(s=>{let x=document.createElement('li');x.innerHTML=`<b>${s.shot}.</b> ${s.type==='putt'?'Putt':s.club||'–'} · ${s.contact||''} ${s.flight||''} → ${s.result||s.puttResult||'–'} ${s.distanceToPreviousM!=null?'· '+s.distanceToPreviousM+' m':''}`;ul.appendChild(x)});
+ markSelections();
 }
 const old=localStorage.getItem('golfLogV3');if(old){try{state=JSON.parse(old)}catch(e){}}
+addChoiceMetadata();
 refresh();
+markSelections();
 </script>
 </body></html>
