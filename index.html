@@ -139,7 +139,7 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
   </div>
   <p class="muted" id="penaltyText">1 Strafschlag ausgewählt.</p>
  </div>
- <button class="primary" onclick="saveEvent()">✓ EREIGNIS SPEICHERN</button>
+ <button id="eventSaveButton" class="primary" onclick="saveEvent()">✓ EREIGNIS SPEICHERN</button>
 </section>
 
 <section class="card">
@@ -213,7 +213,7 @@ function chooseLie(v){state.current.lie=v;state.current.type=null;state.current.
 function chooseType(v){state.current.type=v;state.current.penaltyCount=1;refresh();
  if(v==='shot'){$('shotTypeCard').classList.remove('hidden');$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'})}
  else {$('eventSaveCard').classList.remove('hidden');$('shotTypeCard').classList.add('hidden');$('detailsCard').classList.add('hidden');$('puttCard').classList.add('hidden');
-  const names={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'};$('eventTitle').textContent=names[v]||'Ereignis';$('eventText').textContent=v==='penalty'?'Wähle die Anzahl der Strafschläge. Danach geht es direkt normal mit der nächsten Ballposition weiter.':v==='drop'?'Der Drop wird als Ereignis gespeichert, aber nicht als zusätzlicher Schlag gezählt.':'Das Ereignis wird mit GPS und Zeit gespeichert.'; $('penaltyOptions').classList.toggle('hidden',v!=='penalty');
+  const names={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'};$('eventTitle').textContent=names[v]||'Ereignis';$('eventText').textContent=v==='penalty'?'Wähle die Anzahl der Strafschläge. Danach geht es direkt mit dem normalen nächsten Schlag weiter.':v==='drop'?'Der Drop wird als Ereignis gespeichert, aber nicht als zusätzlicher Schlag gezählt.':'Das Ereignis wird mit GPS und Zeit gespeichert.'; $('penaltyOptions').classList.toggle('hidden',v!=='penalty'); $('eventSaveButton').textContent=v==='penalty'?'WEITER ZUM NÄCHSTEN SCHLAG →':'✓ EREIGNIS SPEICHERN'; $('eventSaveButton').onclick=v==='penalty'?continueAfterPenalty:saveEvent;
   $('eventSaveCard').scrollIntoView({behavior:'smooth',block:'center'})
  }
 }
@@ -253,6 +253,15 @@ function savePutt(){
  const prev=holeShots().slice(-1)[0];
  const s={roundId:state.roundId,hole:state.hole,shot:state.shotNo,time:c.time||new Date().toISOString(),type:'shot',lie:'Grün',shotType:'Putt',club:'Putter',contact:'',flight:'',result:c.result||'Putt vorbei',holed:c.result==='Ball gelocht',lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,distanceToPreviousM:dist(prev,c)};
  state.shots.push(s);state.shotNo++;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'});
+}
+function continueAfterPenalty(){
+ const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
+ const count=Math.max(1,Number(c.penaltyCount||1));
+ const e={roundId:state.roundId,hole:state.hole,type:'event',eventType:'penalty',lie:c.lie,time:c.time||new Date().toISOString(),lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,penaltyCount:count,shotStart:state.shotNo,shotEnd:state.shotNo+count-1};
+ state.shots.push(e);state.shotNo+=count;save();
+ state.current.type='shot';state.current.shotType=null;state.current.club=null;state.current.contact='';state.current.flight='';state.current.result='';
+ $('eventSaveCard').classList.add('hidden');$('shotTypeCard').classList.remove('hidden');$('detailsCard').classList.add('hidden');$('puttCard').classList.add('hidden');
+ orderShotTypes(c.lie);refresh();$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'});
 }
 function saveEvent(){
  const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
