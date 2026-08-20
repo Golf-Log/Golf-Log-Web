@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071014">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Golf Octopus v18</title>
+<title>Golf Octopus v19</title>
 <style>
 :root{--bg:#071014;--card:#0d171b;--card2:#101d22;--ink:#f4fbfb;--muted:#91a5a8;--accent:#22e6ff;--accent2:#0db8d1;--line:#203237;--soft:#102b31;--danger:#ff6f6f;--ok:#63f2c0}
 *{box-sizing:border-box}html,body{min-height:100%}body{margin:0;background:radial-gradient(circle at 50% -10%,#12313a 0,#071014 35%,#050b0e 100%);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -19,7 +19,7 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 </style>
 </head>
 <body>
-<header><div class="headrow"><div><h1>Golf Octopus v18</h1><small>Hyperfocus on your game.</small></div><button class="menuBtn" onclick="toggleMenu()" aria-label="Menü">☰</button></div></header>
+<header><div class="headrow"><div><h1>Golf Octopus v19</h1><small>Hyperfocus on your game.</small></div><button class="menuBtn" onclick="toggleMenu()" aria-label="Menü">☰</button></div></header>
 
 <div id="menu" class="menu hidden" onclick="if(event.target===this)toggleMenu()">
  <div class="menuPanel">
@@ -34,7 +34,7 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 <main>
 <section class="card">
  <div class="status"><div><div class="step">Aktuell</div><h2 id="title">Loch 1 · Schlag 1</h2></div><span class="badge" id="gpsBadge">BEREIT</span></div>
- <div class="muted" id="context">Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.</div>
+ <div class="muted" id="context">Ball erfassen. Golf Octopus übernimmt den Rest, soweit der Kontext es erlaubt.</div>
 </section>
 
 <section class="card hidden" id="holeMarkerCard">
@@ -78,11 +78,10 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
  <div class="grid two" id="shotTypeButtons">
   <button class="quick" data-shot="Putt" onclick="chooseShotType('Putt')">Putt</button>
   <button data-shot="Drive" onclick="chooseShotType('Drive')">Drive</button>
-  <button data-shot="Voller Schlag" onclick="chooseShotType('Voller Schlag')">Voller Schlag</button>
+  <button data-shot="Schlag" onclick="chooseShotType('Schlag')">Schlag</button>
   <button data-shot="Pitch" onclick="chooseShotType('Pitch')">Pitch</button>
   <button data-shot="Chip" onclick="chooseShotType('Chip')">Chip</button>
   <button data-shot="Bunkerschlag" onclick="chooseShotType('Bunkerschlag')">Bunkerschlag</button>
-  <button data-shot="Recovery" onclick="chooseShotType('Recovery')">Recovery</button>
  </div>
  <p class="muted" id="shotTypeText">Noch keine Schlagart.</p>
 </section>
@@ -115,15 +114,14 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
    <button onclick="choose('flight','Rechts')">Rechts</button><button onclick="choose('flight','Sonstiger')">Sonstiger</button>
   </div>
  </details>
- <div style="height:10px"></div><button class="primary" onclick="saveShot()">✓ SCHLAG SPEICHERN</button>
- <div class="flowBack">Kontakt und Ballflug sind optional. Du kannst direkt speichern.</div>
+ <div style="height:10px"></div><div class="flowBack">Schlägerauswahl speichert den Schlag sofort. Kontakt & Ballflug kannst du optional vorher erfassen.</div>
 </section>
 
 <section class="card hidden" id="puttCard">
  <div class="step">4 · Putt</div><h2>Wie ist der Putt ausgegangen?</h2>
  <div class="grid two"><button class="primary" style="grid-column:1/-1" onclick="holeOut()">✓ BALL GELOCHT</button>
  <button onclick="chooseResult('Putt zu lang')">Putt zu lang</button><button onclick="chooseResult('Putt zu kurz')">Putt zu kurz</button></div>
- <div style="height:10px"></div><button class="secondary" style="width:100%" onclick="savePutt()">Putt speichern</button>
+ <div class="flowBack">Jede Auswahl speichert den Putt sofort.</div>
 </section>
 
 <section class="card hidden" id="eventSaveCard">
@@ -147,8 +145,6 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 
 <section class="card">
  <div class="row"><button class="secondary" onclick="undo()">↶ Rückgängig</button><button class="secondary" onclick="markHole()">📍 Loch markieren</button></div>
- <div style="height:8px"></div><button class="secondary" style="width:100%" onclick="finishHole()">✓ Loch beenden</button>
- <div style="height:8px"></div><div class="row"><button class="secondary" onclick="prevHole()">← Zurück</button><button class="secondary" onclick="nextHole()">Nächstes Loch →</button></div>
  <div style="height:8px"></div><button class="secondary" style="width:100%" onclick="finishRound()">🏁 Runde beenden</button>
  <div style="height:8px"></div><button class="secondary" onclick="exportCSV()">CSV exportieren</button>
 </section>
@@ -159,7 +155,7 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 </section>
 </main>
 <script>
-const STORAGE='golfOctopusV18';
+const STORAGE='golfOctopusV19';
 let state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],holeMarkers:[],current:{},nextLieSuggestion:null};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(STORAGE,JSON.stringify(state))}
@@ -239,11 +235,13 @@ function setGPSFailure(msg){$('gpsBadge').textContent='GPS FEHLER';$('gpsBox').i
 function orderShotTypes(lie){
  const order={
   'Grün':['Putt','Chip'],
-  'Bunker':['Bunkerschlag','Pitch','Chip','Voller Schlag','Recovery','Putt','Drive'],
-  'Tee':['Drive','Voller Schlag','Recovery','Pitch','Chip','Putt','Bunkerschlag'],
-  'Fairway':['Voller Schlag','Pitch','Chip','Recovery','Drive','Putt','Bunkerschlag'],
-  'Rough':['Voller Schlag','Recovery','Pitch','Chip','Bunkerschlag','Putt','Drive'],
-  'Vorgrün':['Chip','Pitch','Putt','Voller Schlag','Recovery','Bunkerschlag','Drive']
+  'Bunker':['Bunkerschlag','Pitch','Chip','Schlag','Putt'],
+  'Tee':['Drive','Schlag','Pitch','Chip','Putt'],
+  'Fairway':['Schlag','Pitch','Chip','Putt','Drive'],
+  'Rough':['Schlag','Pitch','Chip','Bunkerschlag','Putt'],
+  'Vorgrün':['Chip','Pitch','Putt','Schlag'],
+  'Penalty Area':['Schlag','Pitch','Chip','Bunkerschlag','Putt'],
+  'Aus':['Schlag','Pitch','Chip','Putt']
  };
  const rank=order[lie]||order['Fairway'];
  const box=$('shotTypeButtons');
@@ -251,6 +249,7 @@ function orderShotTypes(lie){
  [...box.querySelectorAll('[data-shot]')].forEach(b=>{b.classList.remove('quick');b.style.display=rank.includes(b.dataset.shot)?'':'none'});
  const first=box.querySelector(`[data-shot="${rank[0]}"]`); if(first) first.classList.add('quick');
 }
+
 function configureEventOptions(){
  const teeFirstShot=state.current.lie==='Tee' && Number(state.shotNo)===1;
  $('eventShotButton').textContent=teeFirstShot?'VOLLER SCHLAG':'SCHLAG';
@@ -317,18 +316,37 @@ function choosePenaltyMore(){
 
 function chooseShotType(v){
  state.current.shotType=v;state.current.club=v==='Putt'?'Putter':null;state.current.contact='';state.current.flight='';state.current.result='';refresh();
- $('detailsCard').classList.toggle('hidden',v==='Putt');$('puttCard').classList.toggle('hidden',v!=='Putt');
- if(v==='Putt'){$('puttCard').scrollIntoView({behavior:'smooth',block:'center'});}
- else {$('detailsCard').scrollIntoView({behavior:'smooth',block:'center'});}
+ if(v==='Putt'){
+  // Putt needs no club selection or save button: only the result remains.
+  $('detailsCard').classList.add('hidden');$('puttCard').classList.remove('hidden');
+  $('puttCard').scrollIntoView({behavior:'smooth',block:'center'});
+ } else {
+  $('detailsCard').classList.remove('hidden');$('puttCard').classList.add('hidden');
+  orderClubButtons(v);
+  $('detailsCard').scrollIntoView({behavior:'smooth',block:'center'});
+ }
 }
-function choose(k,v){state.current[k]=v;refresh()}
+function orderClubButtons(shotType){
+ const box=$('clubButtons');
+ const order={
+  'Drive':['Driver','5W','4i','5i','6i','7i','8i','9i','PW','50°','54°','58°','Putter','anderes'],
+  'Bunkerschlag':['54°','58°','50°','PW','9i','8i','7i','6i','5i','4i','5W','Driver','Putter','anderes'],
+  'Pitch':['58°','54°','50°','PW','9i','8i','7i','6i','5i','4i','5W','Driver','Putter','anderes'],
+  'Chip':['58°','54°','50°','PW','9i','8i','7i','6i','5i','4i','5W','Driver','Putter','anderes'],
+  'Schlag':['7i','6i','8i','5i','9i','4i','PW','5W','Driver','50°','54°','58°','Putter','anderes']
+ };
+ const rank=order[shotType]||order['Schlag'];
+ [...box.querySelectorAll('button')].sort((a,b)=>rank.indexOf(a.textContent.trim())-rank.indexOf(b.textContent.trim())).forEach(b=>box.appendChild(b));
+}
+function choose(k,v){state.current[k]=v;refresh();
+ if(k==='club') saveShot();
+}
 function chooseResult(v){
  state.current.result=v;
- refresh();
- // Bei einem nicht gelochten Putt ist das Ergebnis bereits vollständig erfasst.
- // Kein zusätzlicher "Putt speichern"-Klick nötig.
  if(v==='Putt zu kurz'||v==='Putt zu lang') savePutt();
+ refresh();
 }
+
 function dist(a,b){if(!a||!b||a.lat==null||b.lat==null)return null;const R=6371000,r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lng-a.lng);const x=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(x)))}
 function saveShot(){
  const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
@@ -336,7 +354,13 @@ function saveShot(){
  if(c.shotType!=='Putt'&&!c.club){alert('Bitte Schläger auswählen.');return}
  const prev=holeShots().slice(-1)[0];
  const s={roundId:state.roundId,hole:state.hole,shot:state.shotNo,time:c.time||new Date().toISOString(),type:'shot',lie:c.lie,shotType:c.shotType,club:c.club||'Putter',contact:c.contact||'',flight:c.flight||'',result:c.result||'',holed:false,lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,distanceToPreviousM:dist(prev,c)};
- state.shots.push(s);state.shotNo++;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
+ state.shots.push(s);
+ // Predict the most likely next ball position without locking the player in.
+ if(c.shotType==='Chip'||c.shotType==='Pitch') state.nextLieSuggestion='Grün';
+ else if(c.shotType==='Bunkerschlag') state.nextLieSuggestion='Bunker';
+ else if(c.lie==='Fairway') state.nextLieSuggestion='Fairway';
+ else if(c.lie==='Rough') state.nextLieSuggestion='Rough';
+ state.shotNo++;save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
 }
 
 function holeOut(){
@@ -383,7 +407,7 @@ function exportCSV(){
 function markSelections(){document.querySelectorAll('button[data-choice]').forEach(b=>b.classList.toggle('selected',state.current[b.dataset.choice]===b.dataset.value))}
 function addChoiceMetadata(){document.querySelectorAll('button[onclick]').forEach(btn=>{const fn=btn.getAttribute('onclick')||'';let m=fn.match(/chooseLie\('([^']+)'\)/);if(m){btn.dataset.choice='lie';btn.dataset.value=m[1];return}m=fn.match(/choose\('([^']+)'\,'([^']+)'\)/);if(m){btn.dataset.choice=m[1];btn.dataset.value=m[2];return}m=fn.match(/chooseResult\('([^']+)'\)/);if(m){btn.dataset.choice='result';btn.dataset.value=m[1];return}m=fn.match(/chooseShotType\('([^']+)'\)/);if(m){btn.dataset.choice='shotType';btn.dataset.value=m[1]}})}
 function refresh(){
- $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('holeCount').textContent=`${holeShots().length} Einträge`; $('markerTitle').textContent=`Loch ${state.hole} markieren`; refreshMenuMarker();
+ $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Ball erfassen. Golf Octopus übernimmt den Rest, soweit der Kontext es erlaubt.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('holeCount').textContent=`${holeShots().length} Einträge`; $('markerTitle').textContent=`Loch ${state.hole} markieren`; refreshMenuMarker();
  const ul=$('shots');const arr=holeShots();ul.innerHTML='';if(!arr.length)ul.innerHTML='<li>Noch keine Einträge.</li>';else arr.forEach(s=>{const li=document.createElement('li');if(s.type==='event'){const label={penalty:'Strafschlag'}[s.eventType]||'Ereignis';li.innerHTML=`<b>${s.shotStart? s.shotStart+'.':''}</b> ${label}${s.eventType==='penalty'?' · '+(s.penaltyCount||1)+'×':''} · ${s.lie||'–'}`;}else{li.innerHTML=`<b>${s.shot}.</b> ${s.shotType||'Schlag'} · ${s.club||''} ${s.contact? '· '+s.contact:''} ${s.result?'→ '+s.result:''}${s.distanceToPreviousM!=null?' · '+s.distanceToPreviousM+' m':''}`;}ul.appendChild(li)});markSelections()
 }
 addChoiceMetadata();
