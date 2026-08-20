@@ -9,20 +9,40 @@
 <style>
 :root{--bg:#071014;--card:#0d171b;--card2:#101d22;--ink:#f4fbfb;--muted:#91a5a8;--accent:#22e6ff;--accent2:#0db8d1;--line:#203237;--soft:#102b31;--danger:#ff6f6f;--ok:#63f2c0}
 *{box-sizing:border-box}html,body{min-height:100%}body{margin:0;background:radial-gradient(circle at 50% -10%,#12313a 0,#071014 35%,#050b0e 100%);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-header{background:rgba(5,12,15,.92);backdrop-filter:blur(12px);color:#fff;padding:15px 15px 13px;position:sticky;top:0;z-index:10;border-bottom:1px solid #173037}header h1{font-size:19px;margin:0;letter-spacing:.12em;text-transform:uppercase}header small{color:var(--muted);letter-spacing:.08em}
+header{background:rgba(5,12,15,.92);backdrop-filter:blur(12px);color:#fff;padding:15px 15px 13px;position:sticky;top:0;z-index:10;border-bottom:1px solid #173037}header .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}header .menuBtn{min-height:42px;width:46px;padding:0;border-radius:12px;font-size:20px;background:#0a1519;border-color:#244047}header h1{font-size:19px;margin:0;letter-spacing:.12em;text-transform:uppercase}header small{color:var(--muted);letter-spacing:.08em}
 main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13,23,27,.94);border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px;box-shadow:0 8px 30px rgba(0,0,0,.14)}
 .step{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:800;margin-bottom:5px}h2{font-size:19px;margin:0 0 10px}.muted{color:var(--muted);font-size:12px;line-height:1.45}.status{display:flex;justify-content:space-between;align-items:center}.badge{font-size:10px;color:var(--accent);border:1px solid #22535d;background:#0b1d22;padding:5px 8px;border-radius:999px;letter-spacing:.08em}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.two{grid-template-columns:repeat(2,1fr)}button{border:1px solid var(--line);background:#0d171b;color:var(--ink);border-radius:12px;padding:12px 8px;min-height:50px;font-size:14px;font-weight:700;transition:.12s ease}button:active{transform:scale(.98)}button.selected{background:var(--soft);border:2px solid var(--accent);box-shadow:0 0 16px rgba(34,230,255,.13);color:#fff}button.primary{background:linear-gradient(180deg,#18d8f1,#0daac2);color:#031014;border-color:var(--accent);width:100%;font-size:16px;box-shadow:0 0 20px rgba(34,230,255,.18)}button.secondary{background:#0a1418;color:#c7d5d7}.row{display:flex;gap:8px}.row>*{flex:1}
 .gps{background:#0b2025;border:1px solid #163b43;border-radius:12px;padding:10px;margin-bottom:9px;font-size:12px}.gps b{display:block;color:#dffcff}.hint{border-left:2px solid var(--accent);padding-left:10px;margin:10px 0}.hidden{display:none!important}.hero{font-size:24px;font-weight:800;text-align:center;padding:12px 0}.list{margin:0;padding:0;list-style:none}.list li{padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.event{border-color:#3a2a2a;background:#1b1214}.event button.selected{border-color:#ff8a8a;background:#2a1719}.flowBack{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}.stat{display:inline-flex;flex-direction:column;min-width:30%;padding:8px}.stat b{font-size:24px}.stat span{font-size:11px;color:var(--muted)}
 .bigPlus{font-size:19px;min-height:64px;letter-spacing:.02em}.sectionTitle{display:flex;justify-content:space-between;align-items:center}.sectionTitle span{font-size:11px;color:var(--muted)}
+.menu{position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(5px);z-index:30;display:flex;justify-content:flex-end}.menuPanel{width:min(360px,88vw);height:100%;background:#071014;border-left:1px solid #244047;padding:18px 14px;box-shadow:-18px 0 50px rgba(0,0,0,.35)}.menuPanel h2{margin:8px 0 18px}.menuPanel button{width:100%;margin-bottom:8px;text-align:left;padding:15px}.menuClose{display:flex;justify-content:space-between;align-items:center}.marker{background:#0b2025;border:1px solid #163b43;border-radius:12px;padding:11px;margin-top:10px}.marker b{display:block;color:#dffcff}.marker span{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header><h1>Golf Octopus</h1><small>Hyperfocus on your game.</small></header>
+<header><div class="headrow"><div><h1>Golf Octopus</h1><small>Hyperfocus on your game.</small></div><button class="menuBtn" onclick="toggleMenu()" aria-label="Menü">☰</button></div></header>
+
+<div id="menu" class="menu hidden" onclick="if(event.target===this)toggleMenu()">
+ <div class="menuPanel">
+  <div class="menuClose"><div><div class="step">Menü</div><h2>Golf Octopus</h2></div><button class="secondary" style="width:auto;margin:0" onclick="toggleMenu()">✕</button></div>
+  <button onclick="markHole();toggleMenu()">📍 &nbsp; Loch markieren</button>
+  <button onclick="pauseRound();toggleMenu()">⏸ &nbsp; Runde pausieren</button>
+  <button onclick="finishRound();toggleMenu()">🏁 &nbsp; Runde beenden</button>
+  <button onclick="exportCSV();toggleMenu()">⇩ &nbsp; Daten exportieren</button>
+  <button onclick="newRound();toggleMenu()">＋ &nbsp; Neue Runde</button>
+  <div id="holeMarkerStatus" class="marker"><b>Loch noch nicht markiert</b><span>Markiere die Position der Fahne, wenn du am Loch stehst.</span></div>
+ </div>
+</div>
 <main>
 <section class="card">
  <div class="status"><div><div class="step">Aktuell</div><h2 id="title">Loch 1 · Schlag 1</h2></div><span class="badge" id="gpsBadge">BEREIT</span></div>
  <div class="muted" id="context">Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.</div>
+</section>
+
+<section class="card hidden" id="holeMarkerCard">
+ <div class="step">Lochposition</div>
+ <h2 id="markerTitle">Loch 1 markieren</h2>
+ <div class="gps" id="markerBox"><b>Noch keine Lochposition</b><span>Die GPS-Position der Fahne wird gespeichert.</span></div>
+ <button class="primary" onclick="markHole()">📍 LOCH MARKIEREN</button>
 </section>
 
 <section class="card" id="positionCard">
@@ -124,7 +144,8 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 </section>
 
 <section class="card">
- <div class="row"><button class="secondary" onclick="undo()">↶ Rückgängig</button><button class="secondary" onclick="finishHole()">Loch beenden</button></div>
+ <div class="row"><button class="secondary" onclick="undo()">↶ Rückgängig</button><button class="secondary" onclick="markHole()">📍 Loch markieren</button></div>
+ <div style="height:8px"></div><button class="secondary" style="width:100%" onclick="finishHole()">✓ Loch beenden</button>
  <div style="height:8px"></div><div class="row"><button class="secondary" onclick="prevHole()">← Zurück</button><button class="secondary" onclick="nextHole()">Nächstes Loch →</button></div>
  <div style="height:8px"></div><div class="row"><button class="secondary" onclick="pauseRound()">⏸ Runde pausieren</button><button class="secondary" onclick="finishRound()">🏁 Runde beenden</button></div>
  <div style="height:8px"></div><button class="secondary" onclick="exportCSV()">CSV exportieren</button>
@@ -138,11 +159,26 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 </main>
 <script>
 const STORAGE='golfOctopusV5';
-let state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},paused:false};
+let state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],holeMarkers:[],current:{},paused:false};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(STORAGE,JSON.stringify(state))}
 function holeShots(){return state.shots.filter(s=>s.hole===state.hole)}
 function resetFlow(){state.current={};['afterPosition','whatCard','shotTypeCard','clubCard','contactCard','flightCard','resultCard','eventSaveCard'].forEach(id=>$(id).classList.add('hidden'));$('gpsBadge').textContent='BEREIT';$('gpsBox').innerHTML='<b>Noch keine Position</b><span>GPS, Höhe und Zeit werden mit dem Ereignis gespeichert.</span>';refresh()}
+function toggleMenu(){const m=$('menu');m.classList.toggle('hidden');if(!m.classList.contains('hidden'))refreshMenuMarker()}
+function currentHoleMarker(){return (state.holeMarkers||[]).find(m=>m.hole===state.hole)}
+function refreshMenuMarker(){const m=currentHoleMarker();$('holeMarkerStatus').innerHTML=m?`<b>Loch ${state.hole} markiert ✓</b><span>${m.lat.toFixed(6)}, ${m.lng.toFixed(6)} · ±${m.accuracy||'?'} m</span>`:`<b>Loch ${state.hole} noch nicht markiert</b><span>Markiere die Position der Fahne, wenn du am Loch stehst.</span>`}
+function markHole(){
+ if(!navigator.geolocation){alert('GPS nicht verfügbar.');return}
+ const btn=document.querySelector('#holeMarkerCard button');if(btn)btn.disabled=true;
+ $('markerTitle').textContent=`Loch ${state.hole} markieren`;$('markerBox').innerHTML='<b>Lochposition wird erfasst …</b><span>Bitte kurz warten.</span>';$('holeMarkerCard').classList.remove('hidden');
+ navigator.geolocation.getCurrentPosition(p=>{
+  const marker={roundId:state.roundId,hole:state.hole,time:new Date().toISOString(),lat:p.coords.latitude,lng:p.coords.longitude,accuracy:Math.round(p.coords.accuracy)};
+  if(p.coords.altitude!=null)marker.altitude=Math.round(p.coords.altitude);
+  state.holeMarkers=(state.holeMarkers||[]).filter(m=>m.hole!==state.hole);state.holeMarkers.push(marker);save();
+  $('markerBox').innerHTML=`<b>Loch ${state.hole} markiert ✓</b><span>${marker.lat.toFixed(6)}, ${marker.lng.toFixed(6)} · ±${marker.accuracy} m</span>`;
+  if(btn)btn.disabled=false;refreshMenuMarker();refresh();
+ },()=>{ $('markerBox').innerHTML='<b>Standortzugriff fehlgeschlagen.</b><span>Bitte GPS-Freigabe prüfen und erneut versuchen.</span>';if(btn)btn.disabled=false; },{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+}
 function capturePosition(){
  if(!navigator.geolocation){setGPSFailure('GPS nicht verfügbar.');return}
  $('gpsBadge').textContent='GPS …';$('gpsBox').innerHTML='<b>Position wird erfasst …</b><span>Bitte kurz warten.</span>';
@@ -194,12 +230,19 @@ function prevHole(){if(state.hole>1){state.hole--;state.shotNo=holeShots().filte
 function pauseRound(){state.paused=true;save();$('pauseCard').classList.remove('hidden');$('context').textContent='Runde pausiert – alle Daten sind gespeichert.'}
 function resumeRound(){state.paused=false;save();$('pauseCard').classList.add('hidden');refresh()}
 function finishRound(){const holes=[...new Set(state.shots.map(s=>s.hole))].sort((a,b)=>a-b);if(!holes.length){alert('Noch keine Einträge erfasst.');return}const strokes=state.shots.filter(s=>s.type==='shot'||s.eventType==='penalty').length;const putts=state.shots.filter(s=>s.shotType==='Putt').length;const penalties=state.shots.filter(s=>s.eventType==='penalty').length;$('roundSummary').innerHTML=`<div>${[['Löcher',holes.length],['Schläge',strokes],['Putts',putts],['Penaltys',penalties]].map(x=>`<span class="stat"><b>${x[1]}</b><span>${x[0]}</span></span>`).join('')}</div><p class="muted">Alle Einträge bleiben lokal gespeichert und können als CSV exportiert werden.</p>`;$('roundSummaryCard').classList.remove('hidden');save();window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
-function newRound(){if(!confirm('Neue Runde starten? Exportiere die aktuelle Runde vorher, wenn du sie behalten möchtest.'))return;state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],current:{},paused:false};save();$('roundSummaryCard').classList.add('hidden');$('pauseCard').classList.add('hidden');resetFlow();window.scrollTo({top:0,behavior:'smooth'})}
-function exportCSV(){const cols=['roundId','hole','shot','type','eventType','time','lie','shotType','club','contact','flight','result','lat','lng','accuracy','altitude','distanceToPreviousM'];const lines=[cols.join(';'),...state.shots.map(s=>cols.map(c=>JSON.stringify(s[c]??'')).join(';'))];const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golf-octopus-'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
+function newRound(){if(!confirm('Neue Runde starten? Exportiere die aktuelle Runde vorher, wenn du sie behalten möchtest.'))return;state={roundId:new Date().toISOString(),hole:1,shotNo:1,shots:[],holeMarkers:[],current:{},paused:false};save();$('roundSummaryCard').classList.add('hidden');$('pauseCard').classList.add('hidden');resetFlow();window.scrollTo({top:0,behavior:'smooth'})}
+function exportCSV(){
+ const cols=['roundId','hole','shot','type','eventType','time','lie','shotType','club','contact','flight','result','lat','lng','accuracy','altitude','distanceToPreviousM'];
+ const lines=[cols.join(';'),...state.shots.map(s=>cols.map(c=>JSON.stringify(s[c]??'')).join(';'))];
+ lines.push('');lines.push('HOLE_MARKERS');lines.push(['roundId','hole','time','lat','lng','accuracy','altitude'].join(';'));
+ (state.holeMarkers||[]).forEach(m=>lines.push(['roundId','hole','time','lat','lng','accuracy','altitude'].map(c=>JSON.stringify(c==='roundId'?m.roundId:m[c]??'')).join(';')));
+ const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='golf-octopus-'+new Date().toISOString().slice(0,10)+'.csv';a.click()
+}
+
 function markSelections(){document.querySelectorAll('button[data-choice]').forEach(b=>b.classList.toggle('selected',state.current[b.dataset.choice]===b.dataset.value))}
 function addChoiceMetadata(){document.querySelectorAll('button[onclick]').forEach(btn=>{const fn=btn.getAttribute('onclick')||'';let m=fn.match(/chooseLie\('([^']+)'\)/);if(m){btn.dataset.choice='lie';btn.dataset.value=m[1];return}m=fn.match(/choose\('([^']+)'\,'([^']+)'\)/);if(m){btn.dataset.choice=m[1];btn.dataset.value=m[2];return}m=fn.match(/chooseResult\('([^']+)'\)/);if(m){btn.dataset.choice='result';btn.dataset.value=m[1];return}m=fn.match(/chooseShotType\('([^']+)'\)/);if(m){btn.dataset.choice='shotType';btn.dataset.value=m[1]}})}
 function refresh(){
- $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=state.paused?'Runde pausiert':holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('contactText').textContent=state.current.contact?`Ausgewählt: ${state.current.contact}`:'Noch kein Kontakt.';$('flightText').textContent=state.current.flight?`Ausgewählt: ${state.current.flight}`:'Noch kein Flug.';$('holeCount').textContent=`${holeShots().length} Einträge`;
+ $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=state.paused?'Runde pausiert':holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('contactText').textContent=state.current.contact?`Ausgewählt: ${state.current.contact}`:'Noch kein Kontakt.';$('flightText').textContent=state.current.flight?`Ausgewählt: ${state.current.flight}`:'Noch kein Flug.';$('holeCount').textContent=`${holeShots().length} Einträge`; $('markerTitle').textContent=`Loch ${state.hole} markieren`; refreshMenuMarker();
  const ul=$('shots');const arr=holeShots();ul.innerHTML='';if(!arr.length)ul.innerHTML='<li>Noch keine Einträge.</li>';else arr.forEach(s=>{const li=document.createElement('li');if(s.type==='event'){const label={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'}[s.eventType]||'Ereignis';li.innerHTML=`<b>${s.shot? s.shot+'.':''}</b> ${label} · ${s.lie||'–'}`;}else{li.innerHTML=`<b>${s.shot}.</b> ${s.shotType||'Schlag'} · ${s.club||''} ${s.contact? '· '+s.contact:''} ${s.result?'→ '+s.result:''}${s.distanceToPreviousM!=null?' · '+s.distanceToPreviousM+' m':''}`;}ul.appendChild(li)});markSelections()
 }
 addChoiceMetadata();
