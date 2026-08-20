@@ -203,13 +203,27 @@ function capturePosition(){
   $('gpsBox').innerHTML=`<b>Position gespeichert ✓</b><span>${state.current.lat.toFixed(6)}, ${state.current.lng.toFixed(6)} · ±${state.current.accuracy} m</span>`;$('gpsBadge').textContent='ERFASST';
   // Browser geolocation does not provide altitude reliably; preserve it when available.
   if(p.coords.altitude!=null) state.current.altitude=Math.round(p.coords.altitude);
-  $('afterPosition').classList.remove('hidden');
-  if(state.nextLieSuggestion){
+  // Der erste Schlag eines Lochs beginnt immer am Tee: Lage nicht abfragen.
+  if(Number(state.shotNo)===1){
+   state.current.lie='Tee';
+   state.current.type=null;
+   state.current.shotType=null;
+   $('afterPosition').classList.add('hidden');
+   configureEventOptions();
+   $('whatCard').classList.remove('hidden');
+   $('shotTypeCard').classList.add('hidden');
+   $('eventSaveCard').classList.add('hidden');
+   $('puttCard').classList.add('hidden');
+   $('detailsCard').classList.add('hidden');
+   $('whatCard').scrollIntoView({behavior:'smooth',block:'center'});
+  } else if(state.nextLieSuggestion){
+   $('afterPosition').classList.remove('hidden');
    prioritizeLieButtons(state.nextLieSuggestion);
    $('lieText').textContent=`Vorschlag: ${state.nextLieSuggestion}`;
    state.nextLieSuggestion=null;
    save();
   } else {
+   $('afterPosition').classList.remove('hidden');
    prioritizeLieButtons('Grün');
   }
   refresh();
@@ -278,7 +292,13 @@ function chooseShotType(v){
  else {$('detailsCard').scrollIntoView({behavior:'smooth',block:'center'});}
 }
 function choose(k,v){state.current[k]=v;refresh()}
-function chooseResult(v){state.current.result=v;refresh()}
+function chooseResult(v){
+ state.current.result=v;
+ refresh();
+ // Bei einem nicht gelochten Putt ist das Ergebnis bereits vollständig erfasst.
+ // Kein zusätzlicher "Putt speichern"-Klick nötig.
+ if(v==='Putt zu kurz'||v==='Putt zu lang') savePutt();
+}
 function dist(a,b){if(!a||!b||a.lat==null||b.lat==null)return null;const R=6371000,r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lng-a.lng);const x=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(x)))}
 function saveShot(){
  const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
