@@ -124,13 +124,21 @@ main{max-width:620px;margin:auto;padding:12px 12px 90px}.card{background:rgba(13
 <section class="card hidden" id="puttCard">
  <div class="step">4 · Putt</div><h2>Wie ist der Putt ausgegangen?</h2>
  <div class="grid two"><button class="primary" style="grid-column:1/-1" onclick="holeOut()">✓ BALL GELOCHT</button>
- <button onclick="chooseResult('Putt vorbei')">Putt vorbei</button><button onclick="chooseResult('Putt zu kurz')">Putt zu kurz</button></div>
+ <button onclick="chooseResult('Putt zu lang')">Putt zu lang</button><button onclick="chooseResult('Putt zu kurz')">Putt zu kurz</button></div>
  <div style="height:10px"></div><button class="secondary" style="width:100%" onclick="savePutt()">Putt speichern</button>
 </section>
 
 <section class="card hidden" id="eventSaveCard">
  <div class="step">Ereignis</div><h2 id="eventTitle">Ereignis speichern</h2>
  <p class="muted" id="eventText"></p>
+ <div id="penaltyOptions" class="hidden">
+  <div class="step">Anzahl Strafschläge</div>
+  <div class="grid two">
+   <button onclick="choosePenaltyCount(1)">1</button><button onclick="choosePenaltyCount(2)">2</button>
+   <button onclick="choosePenaltyCount(3)">3</button><button onclick="choosePenaltyCount(4)">4</button>
+  </div>
+  <p class="muted" id="penaltyText">1 Strafschlag ausgewählt.</p>
+ </div>
  <button class="primary" onclick="saveEvent()">✓ EREIGNIS SPEICHERN</button>
 </section>
 
@@ -202,13 +210,15 @@ function orderShotTypes(lie){
  const first=box.querySelector(`[data-shot="${rank[0]}"]`); if(first) first.classList.add('quick');
 }
 function chooseLie(v){state.current.lie=v;state.current.type=null;state.current.shotType=null;refresh();$('whatCard').classList.remove('hidden');orderShotTypes(v); $('whatCard').scrollIntoView({behavior:'smooth',block:'center'})}
-function chooseType(v){state.current.type=v;refresh();
+function chooseType(v){state.current.type=v;state.current.penaltyCount=1;refresh();
  if(v==='shot'){$('shotTypeCard').classList.remove('hidden');$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'})}
  else {$('eventSaveCard').classList.remove('hidden');$('shotTypeCard').classList.add('hidden');$('detailsCard').classList.add('hidden');$('puttCard').classList.add('hidden');
-  const names={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'};$('eventTitle').textContent=names[v]||'Ereignis';$('eventText').textContent=v==='penalty'?'Ein Strafschlag wird als eigener Schlag gezählt.':v==='drop'?'Der Drop wird als Ereignis gespeichert, aber nicht als zusätzlicher Schlag gezählt.':'Das Ereignis wird mit GPS und Zeit gespeichert.';
+  const names={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'};$('eventTitle').textContent=names[v]||'Ereignis';$('eventText').textContent=v==='penalty'?'Wähle die Anzahl der Strafschläge. Danach geht es direkt normal mit der nächsten Ballposition weiter.':v==='drop'?'Der Drop wird als Ereignis gespeichert, aber nicht als zusätzlicher Schlag gezählt.':'Das Ereignis wird mit GPS und Zeit gespeichert.'; $('penaltyOptions').classList.toggle('hidden',v!=='penalty');
   $('eventSaveCard').scrollIntoView({behavior:'smooth',block:'center'})
  }
 }
+
+function choosePenaltyCount(n){ state.current.penaltyCount=n; $('penaltyText').textContent=`${n} Strafschlag${n===1?'':'e'} ausgewählt.`; refresh(); }
 function chooseShotType(v){
  state.current.shotType=v;state.current.club=v==='Putt'?'Putter':null;state.current.contact='';state.current.flight='';state.current.result='';refresh();
  $('detailsCard').classList.toggle('hidden',v==='Putt');$('puttCard').classList.toggle('hidden',v!=='Putt');
@@ -247,8 +257,9 @@ function savePutt(){
 function saveEvent(){
  const c=state.current;if(!c.lat||!c.lng||!c.lie){alert('Bitte zuerst Ballposition und Lage erfassen.');return}
  const isPenalty=c.type==='penalty';
- const e={roundId:state.roundId,hole:state.hole,type:'event',eventType:c.type,lie:c.lie,time:c.time||new Date().toISOString(),lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude};
- if(isPenalty){e.shot=state.shotNo;state.shotNo++} else e.shot=null;
+ const count=isPenalty?Math.max(1,Number(c.penaltyCount||1)):0;
+ const e={roundId:state.roundId,hole:state.hole,type:'event',eventType:c.type,lie:c.lie,time:c.time||new Date().toISOString(),lat:c.lat,lng:c.lng,accuracy:c.accuracy,altitude:c.altitude,penaltyCount:count};
+ if(isPenalty){e.shotStart=state.shotNo;e.shotEnd=state.shotNo+count-1;state.shotNo+=count} else e.shot=null;
  state.shots.push(e);save();resetFlow();window.scrollTo({top:0,behavior:'smooth'})
 }
 function undo(){const arr=holeShots();if(!arr.length){alert('Nichts zum Rückgängig machen.');return}const last=arr[arr.length-1];state.shots.splice(state.shots.lastIndexOf(last),1);if(last.type==='shot'||last.eventType==='penalty')state.shotNo=Math.max(1,state.shotNo-1);save();resetFlow()}
@@ -271,7 +282,7 @@ function markSelections(){document.querySelectorAll('button[data-choice]').forEa
 function addChoiceMetadata(){document.querySelectorAll('button[onclick]').forEach(btn=>{const fn=btn.getAttribute('onclick')||'';let m=fn.match(/chooseLie\('([^']+)'\)/);if(m){btn.dataset.choice='lie';btn.dataset.value=m[1];return}m=fn.match(/choose\('([^']+)'\,'([^']+)'\)/);if(m){btn.dataset.choice=m[1];btn.dataset.value=m[2];return}m=fn.match(/chooseResult\('([^']+)'\)/);if(m){btn.dataset.choice='result';btn.dataset.value=m[1];return}m=fn.match(/chooseShotType\('([^']+)'\)/);if(m){btn.dataset.choice='shotType';btn.dataset.value=m[1]}})}
 function refresh(){
  $('title').textContent=`Loch ${state.hole} · Schlag ${state.shotNo}`;$('context').textContent=holeShots().length?`${holeShots().filter(s=>s.type==='shot'||s.eventType==='penalty').length} Schläge · ${holeShots().length} Einträge auf diesem Loch.`:'Einfach den Ball erfassen. Danach bestimmst du, was passiert ist.';$('lieText').textContent=state.current.lie?`Ausgewählt: ${state.current.lie}`:'Lage noch nicht ausgewählt.';$('shotTypeText').textContent=state.current.shotType?`Ausgewählt: ${state.current.shotType}`:'Noch keine Schlagart.';$('clubText').textContent=state.current.club?`Ausgewählt: ${state.current.club}`:'Noch kein Schläger.';$('holeCount').textContent=`${holeShots().length} Einträge`; $('markerTitle').textContent=`Loch ${state.hole} markieren`; refreshMenuMarker();
- const ul=$('shots');const arr=holeShots();ul.innerHTML='';if(!arr.length)ul.innerHTML='<li>Noch keine Einträge.</li>';else arr.forEach(s=>{const li=document.createElement('li');if(s.type==='event'){const label={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'}[s.eventType]||'Ereignis';li.innerHTML=`<b>${s.shot? s.shot+'.':''}</b> ${label} · ${s.lie||'–'}`;}else{li.innerHTML=`<b>${s.shot}.</b> ${s.shotType||'Schlag'} · ${s.club||''} ${s.contact? '· '+s.contact:''} ${s.result?'→ '+s.result:''}${s.distanceToPreviousM!=null?' · '+s.distanceToPreviousM+' m':''}`;}ul.appendChild(li)});markSelections()
+ const ul=$('shots');const arr=holeShots();ul.innerHTML='';if(!arr.length)ul.innerHTML='<li>Noch keine Einträge.</li>';else arr.forEach(s=>{const li=document.createElement('li');if(s.type==='event'){const label={penalty:'Strafschlag',drop:'Ball gedroppt',other:'Sonstiges'}[s.eventType]||'Ereignis';li.innerHTML=`<b>${s.shotStart? s.shotStart+'.':''}</b> ${label}${s.eventType==='penalty'?' · '+(s.penaltyCount||1)+'×':''} · ${s.lie||'–'}`;}else{li.innerHTML=`<b>${s.shot}.</b> ${s.shotType||'Schlag'} · ${s.club||''} ${s.contact? '· '+s.contact:''} ${s.result?'→ '+s.result:''}${s.distanceToPreviousM!=null?' · '+s.distanceToPreviousM+' m':''}`;}ul.appendChild(li)});markSelections()
 }
 addChoiceMetadata();
 const old=localStorage.getItem(STORAGE);if(old){try{state=JSON.parse(old)}catch(e){}}refresh();
