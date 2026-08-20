@@ -196,7 +196,7 @@ function capturePosition(){
 function setGPSFailure(msg){$('gpsBadge').textContent='GPS FEHLER';$('gpsBox').innerHTML=`<b>${msg}</b><span>Ohne Position kann dieser Prototyp den Eintrag nicht sauber georeferenzieren.</span>`}
 function orderShotTypes(lie){
  const order={
-  'Grün':['Putt','Chip','Pitch','Voller Schlag','Recovery','Bunkerschlag','Drive'],
+  'Grün':['Putt','Chip'],
   'Bunker':['Bunkerschlag','Pitch','Chip','Voller Schlag','Recovery','Putt','Drive'],
   'Tee':['Drive','Voller Schlag','Recovery','Pitch','Chip','Putt','Bunkerschlag'],
   'Fairway':['Voller Schlag','Pitch','Chip','Recovery','Drive','Putt','Bunkerschlag'],
@@ -206,10 +206,21 @@ function orderShotTypes(lie){
  const rank=order[lie]||order['Fairway'];
  const box=$('shotTypeButtons');
  [...box.querySelectorAll('[data-shot]')].sort((a,b)=>rank.indexOf(a.dataset.shot)-rank.indexOf(b.dataset.shot)).forEach(b=>box.appendChild(b));
- [...box.querySelectorAll('[data-shot]')].forEach(b=>b.classList.remove('quick'));
+ [...box.querySelectorAll('[data-shot]')].forEach(b=>{b.classList.remove('quick');b.style.display=rank.includes(b.dataset.shot)?'':'none'});
  const first=box.querySelector(`[data-shot="${rank[0]}"]`); if(first) first.classList.add('quick');
 }
-function chooseLie(v){state.current.lie=v;state.current.type=null;state.current.shotType=null;refresh();$('whatCard').classList.remove('hidden');orderShotTypes(v); $('whatCard').scrollIntoView({behavior:'smooth',block:'center'})}
+function chooseLie(v){
+ state.current.lie=v;state.current.type=null;state.current.shotType=null;refresh();orderShotTypes(v);
+ if(v==='Grün'){
+  $('whatCard').classList.add('hidden');
+  $('shotTypeCard').classList.remove('hidden');
+  $('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'});
+ } else {
+  $('whatCard').classList.remove('hidden');
+  $('shotTypeCard').classList.add('hidden');
+  $('whatCard').scrollIntoView({behavior:'smooth',block:'center'});
+ }
+}
 function chooseType(v){state.current.type=v;state.current.penaltyCount=1;refresh();
  if(v==='shot'){$('shotTypeCard').classList.remove('hidden');$('shotTypeCard').scrollIntoView({behavior:'smooth',block:'center'})}
  else {$('eventSaveCard').classList.remove('hidden');$('shotTypeCard').classList.add('hidden');$('detailsCard').classList.add('hidden');$('puttCard').classList.add('hidden');
